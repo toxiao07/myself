@@ -29,10 +29,10 @@
         <nav>
             <ul>
                 <li><a href="#mysql">MySQL</a></li>
-                <li><a href="#java">java</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="#elements">Elements</a></li>
+                <li><a href="#java">java技术点</a></li>
+                <li><a href="#utils">java工具类</a></li>
+                <!--<li><a href="#contact">Contact</a></li>-->
+                <!--<li><a href="#elements">Elements</a></li>-->
             </ul>
         </nav>
     </header>
@@ -40,67 +40,68 @@
     <!-- Main -->
     <div id="main">
 
+        <!--------------------------------------------------------------------------------------------------------------   MySQL 开始    ----------------------------------------------->
         <!-- mysql -->
         <article id="mysql">
-            <h2 class="major">MySql</h2>
+            <h2 class="major">MySql知识点</h2>
             <span class="image main"><img src="images/mysql.jpg" alt=""/></span>
-            <p> <a href="#mysql01">find_in_set()函数的使用</a>.</p>
+            <p><a href="#mysql01">find_in_set()函数的使用</a>.</p>
             <p></p>
         </article>
 
         <!-- find_in_set() -->
         <article id="mysql01">
             <h2 class="major">find_in_set()函数的使用</h2>
-            <h3>省去了递归，但是用到了子查询，不建议做海量数据的处理</h3>
-            <span class="image main"></span>
-            <p>在此最近的一个项目的设计中，有以下场景：部门和职员的两张表，部门是有很多节点的，比如XXX部门下面还细分了很多组，而职员表中是使用一个字段和具体的部门组关联的。如果我需要查询XXX部门下的所有职员呢？</p>
-            <p>在查阅了很多资料之后，做以下记录：</p>
-            <p>部门表</p>
-            <p>  <ol  start="1"><li class="alt"><span><span>create&nbsp;table&nbsp;department&nbsp;&nbsp;</span></span></li><li class=""><span>(&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;dept_id&nbsp;bigint&nbsp;auto_increment&nbsp;comment&nbsp;<span class="string">'部门id'</span><span>&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;primary&nbsp;key,&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;parent_id&nbsp;bigint&nbsp;<span class="keyword">default</span><span>&nbsp;0&nbsp;null&nbsp;comment&nbsp;</span><span class="string">'父部门id'</span><span>,&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;ancestors&nbsp;varchar(50)&nbsp;<span class="keyword">default</span><span>&nbsp;</span><span class="string">''</span><span>&nbsp;null&nbsp;comment&nbsp;</span><span class="string">'祖级列表'</span><span>,&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;dept_name&nbsp;varchar(30)&nbsp;<span class="keyword">default</span><span>&nbsp;</span><span class="string">''</span><span>&nbsp;null&nbsp;comment&nbsp;</span><span class="string">'部门名称'</span><span>,&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;create_by&nbsp;varchar(64)&nbsp;<span class="keyword">default</span><span>&nbsp;</span><span class="string">''</span><span>&nbsp;null&nbsp;comment&nbsp;</span><span class="string">'创建者'</span><span>,&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;create_time&nbsp;datetime&nbsp;null&nbsp;comment&nbsp;<span class="string">'创建时间'</span><span>,&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;update_by&nbsp;varchar(64)&nbsp;<span class="keyword">default</span><span>&nbsp;</span><span class="string">''</span><span>&nbsp;null&nbsp;comment&nbsp;</span><span class="string">'更新者'</span><span>,&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;update_time&nbsp;datetime&nbsp;null&nbsp;comment&nbsp;<span class="string">'更新时间'</span><span>&nbsp;&nbsp;</span></span></li><li class=""><span>)&nbsp;&nbsp;</span></li><li class="alt"><span>comment&nbsp;<span class="string">'部门表'</span><span>;&nbsp;&nbsp;</span></span></li></ol>  </p>
-            <p>其中的ancestors字段就会用于记录当前的节点的所有父节点，比如：XXX部门的id为1，XXX部门下的XXX小组的id为101，XXX部门下的XXX小组的XXX临时小组的id为201，那么此时的数据如下：</p>
-            <p>1. 首先是XXX部门的ancestors的值为1</p>
-            <p>2. 其次是XXX部门下的XXX小组的ancestors为1,101</p>
-            <p>3. 最后XXX部门下的XXX小组的XXX临时小组的ancestors为1,101,201</p>
-            <p>职员表</p>
-            <p><ol  start="1"><li class="alt"><span><span>create&nbsp;table&nbsp;staff&nbsp;&nbsp;</span></span></li><li class=""><span>(&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;sta_id&nbsp;bigint&nbsp;auto_increment&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;primary&nbsp;key,&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;sta_name&nbsp;varchar(128)&nbsp;null&nbsp;comment&nbsp;<span class="string">'学生的名称'</span><span>,&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;sta_num&nbsp;varchar(128)&nbsp;null&nbsp;comment&nbsp;<span class="string">'学号'</span><span>,&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;dept_id&nbsp;bigint&nbsp;null&nbsp;comment&nbsp;<span class="string">'所属班级的id'</span><span>,&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;create_by&nbsp;varchar(128)&nbsp;null,&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;create_time&nbsp;datetime&nbsp;null,&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;update_by&nbsp;varchar(128)&nbsp;null,&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;update_time&nbsp;datetime&nbsp;null,&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;constraint&nbsp;eams_student_eams_profession_prof_id_fk&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreign&nbsp;key&nbsp;(prof_id)&nbsp;references&nbsp;eams_profession&nbsp;(prof_id)&nbsp;&nbsp;</span></li><li class=""><span>)&nbsp;&nbsp;</span></li><li class="alt"><span>comment&nbsp;<span class="string">'职员表'</span><span>;&nbsp;&nbsp;</span></p>
-            <p>以上表中的dept_id就是记录的所属部门的id;</p>
-            <p>功能实现</p>
-            <p>为了实现引言所提到的功能，需要用到以下MySQL函数FIND_IN_SET(str,strlist)，
-                str 表示要查询的字符串
-                strlist为字段名，以,隔开，如(1,101,201)<br>
-                其意思为：查询字段strList中包含str的结果，返回null或者记录</p>
-
-            <p><b>注：</b>假如字符串str在由N个子链组成的字符串列表strlist 中，则返回值的范围在 1 到 N 之间。 一个字符串列表就是一个由一些被 ‘,’ 符号分开的子链组成的字符串。如果第一个参数是一个常数字符串，而第二个是type SET列，则FIND_IN_SET() 函数被优化，使用比特计算。 如果str不在strlist 或strlist 为空字符串，则返回值为 0 。如任意一个参数为NULL，则返回值为 NULL。这个函数在第一个参数包含一个逗号(‘,’)时将无法正常运行。
-
-                那么功能实现的写法为：</p>
-            <p><ol start="1"><li class="alt"><span><span>SELECT&nbsp;s.*&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;FROM&nbsp;eams.staff&nbsp;s&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;LEFT&nbsp;JOIN&nbsp;department&nbsp;p&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;ON&nbsp;s.prof_id&nbsp;=&nbsp;p.prof_id&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;WHERE&nbsp;(s.prof_id&nbsp;=&nbsp;100&nbsp;OR&nbsp;s.prof_id&nbsp;IN&nbsp;(SELECT&nbsp;t.prof_id&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;FROM&nbsp;department&nbsp;t&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;WHERE&nbsp;FIND_IN_SET(1,&nbsp;ancestors)))&nbsp;&nbsp;&nbsp;</span></li></ol></p>
-
+            <img style="width: 100%;" src="page/MySQL中find_in_set()函数的使用.png"/>
+            <a style="float: right" href="resource/MySQL中find_in_set()函数的使用.md" download="OriginFilter.java">点我下载</a>
         </article>
 
-        <!-- java -->
+        <!--------------------------------------------------------------------------------------------------------------    MySQL结束     ---------------------------------------------------->
+
+
+        <!--------------------------------------------------------------------------------------------------------------    Java技术点开始     ---------------------------------------------------->
+        <!-- java技术点 -->
         <article id="java">
-            <h2 class="major">java随笔</h2>
+            <h2 class="major">java技术点</h2>
             <span class="image main"><img src="images/java.jpg" alt=""/></span>
-            <p> <a href="#java01">springboot2.0集成RestTemplate</a>.</p>
-            <p></p>
+            <p><a href="#java01">springboot2.0集成RestTemplate</a>.</p>
         </article>
 
         <!-- springboot2.0集成RestTemplate -->
         <article id="java01">
             <h2 class="major">springboot2.0集成RestTemplate</h2>
             <h3>远程调用接口</h3>
-      <!-- <img style="width: 100%;" src=""/> -->
+            <img style="width: 100%;" src="page/springboot2.0集成RestTemplate.png"/>
+            <a style="float: right" href="resource/MySQL中find_in_set()函数的使用.md" download="OriginFilter.java">点我下载</a>
         </article>
 
-        <!-- About -->
-        <article id="about">
-            <h2 class="major">About</h2>
-            <span class="image main"><img src="images/pic03.jpg" alt=""/></span>
-            <p>Lorem ipsum dolor sit amet, consectetur et adipiscing elit. Praesent eleifend dignissim arcu, at eleifend
-                sapien imperdiet ac. Aliquam erat volutpat. Praesent urna nisi, fringila lorem et vehicula lacinia quam.
-                Integer sollicitudin mauris nec lorem luctus ultrices. Aliquam libero et malesuada fames ac ante ipsum
-                primis in faucibus. Cras viverra ligula sit amet ex mollis mattis lorem ipsum dolor sit amet.</p>
+
+        <!--------------------------------------------------------------------------------------------------------------    Java技术点结束     ---------------------------------------------------->
+
+        <!-- Java工具类 -->
+        <article id="utils">
+            <h2 class="major">Java工具类</h2>
+            <span class="image main"><img src="images/hahaha.jpg" alt=""/></span>
+            <a href="utils/crossDomain/OriginFilter.java" download="OriginFilter.java">跨域处理</a> &emsp;&emsp;&emsp;
+            <a href="utils/date/DateUtils.java" download="DateUtils.java">时间</a>&emsp;&emsp;&emsp;
+            <a href="utils/easyPoi/EasyPoiUtils.java" download="EasyPoiUtils.java">excel导入导出</a>&emsp;&emsp;
+            <a href="utils/log/LogAspect.java" download="LogAspect.java">切面日志</a>&emsp;&emsp;
+            <a href="utils/MD5/MD5Utils.java" download="MD5Utils.java">MD5加密</a>&emsp;&emsp;&emsp;
+            (<a href="utils/restTemplateUtil/RestTemplateUtil.java" download="RestTemplateUtil.java">远程调用</a>
+            <a href="utils/restTemplateUtil/WxMappingJackson2HttpMessageConverter.java" download="WxMappingJackson2HttpMessageConverter.java">远程调用</a>)&emsp;&emsp;
+            (<a href="utils/SMS/SendSmsVO.java" download="SendSmsVO.java">阿里短信发送</a>
+            <a href="utils/SMS/SMSTools.java" download="SMSTools.java">阿里短信发送</a>)&emsp;
+            <a href="utils/spring/SpringContextUtil.java" download="SpringContextUtil.java">spring获取bean(1)</a>&emsp;&emsp;
+            <a href="utils/spring/SpringUtil.java" download="SpringUtil.java">spring获取bean(2)</a>&emsp;&emsp;
+            <a href="utils/string/StringUtils.java" download="StringUtils.java">字符串</a>&emsp;&emsp;
+            <a href="utils/task/MainActivity.java" download="MainActivity.java">任务调度(1)</a>&emsp;
+            <a href="utils/task/TimerUtil.java" download="TimerUtil.java">任务调度(2)</a>&emsp;&emsp;
+            <a href="utils/tree/TreeUtil.java" download="TimerUtil.java">递归</a>&emsp;&emsp;
+            <a href="utils/verificationCode/RandomValidateCodeUtil.java" download="RandomValidateCodeUtil.java">图片验证码</a>&emsp;&emsp;&emsp;
         </article>
+
+
+
 
         <!-- Contact -->
         <article id="contact">
@@ -386,7 +387,7 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 
     <!-- Footer -->
     <footer id="footer">
-        <p class="copyright">&copy;  <a href="https://toxiao07.github.io/myself.github.io/">随心所记</a>.</p>
+        <p class="copyright">&copy; <a href="https://toxiao07.github.io/myself.github.io/">随心所记</a>.</p>
     </footer>
 
 </div>
